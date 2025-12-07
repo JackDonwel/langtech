@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="max-w-5xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6">Available Courses</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for course in courses %}
+        <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold mb-2">{{ course.title }}</h2>
+            <p class="text-gray-600 mb-4">{{ course.description|truncatewords:20 }}</p>
+            <p class="text-sm text-gray-500">Duration: {{ course.duration_weeks }} weeks</p>
+            <p class="font-bold text-blue-700">Price: ${{ course.price }}</p>
+            <a href="{% url 'lessons:course_detail' course.id %}" 
+               class="mt-3 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                View Details
+            </a>
+        </div>
+        {% empty %}
+        <p>No courses available at the moment.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
+

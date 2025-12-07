@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Complete Your Payment{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-16 px-6">
+  
+  <!-- Heading -->
+  <h2 class="text-4xl font-extrabold text-center mb-10 text-gray-900">
+    Complete Your Payment
+  </h2>
+  <p class="text-center text-gray-600 mb-12">
+    Pay for <span class="font-semibold">{{ type|title }}</span> #{{ object.id }}
+  </p>
+
+  <!-- 📦 Order Summary -->
+  <div class="bg-gray-50 rounded-lg p-6 mb-12 shadow">
+    <h3 class="text-xl font-bold mb-4 text-gray-800">Order Summary</h3>
+    <ul class="space-y-2 text-gray-700">
+      <li><strong>Reference:</strong> #{{ object.id }}</li>
+      {% if type == "video" %}
+        <li><strong>Title:</strong> {{ object.title }}</li>
+        <li><strong>Price:</strong> TZS {{ amount }}</li>
+      {% elif type == "booking" %}
+        <li><strong>Date:</strong> {{ object.booking_date }}</li>
+        <li><strong>Timeslot:</strong> {{ object.timeslot }}</li>
+        <li><strong>Amount:</strong> TZS {{ amount }}</li>
+      {% elif type == "quote" %}
+        <li><strong>Service:</strong> {{ object.service_id }}</li>
+        <li><strong>Amount:</strong> TZS {{ amount }}</li>
+      {% elif type == "course" %}
+        <li><strong>Course:</strong> {{ object.title }}</li>
+        <li><strong>Price:</strong> TZS {{ amount }}</li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <!-- 💳 Payment Methods -->
+  <h3 class="text-2xl font-semibold mb-6 text-gray-800">Choose Payment Method</h3>
+
+  <!-- M-Pesa -->
+  <div class="mb-12 border rounded-lg p-6 shadow-sm">
+    <h4 class="text-lg font-bold text-green-700 mb-4">📲 Pay with M-Pesa</h4>
+    <p><strong>Number:</strong> {{ mpesa_number }}</p>
+    <p><strong>Name:</strong> LANGTOUCH ACADEMY</p>
+    <p class="mt-2">Scan QR Code to pay:</p>
+    <img src="{% url 'payments:generate_qr' type object.id 'mpesa' %}"
+         alt="M-Pesa QR Code"
+         class="mx-auto my-4 border p-2 rounded-lg">
+  </div>
+
+  <!-- Airtel -->
+  <div class="mb-12 border rounded-lg p-6 shadow-sm">
+    <h4 class="text-lg font-bold text-red-700 mb-4">📲 Pay with Airtel Money</h4>
+    <p><strong>Number:</strong> {{ airtel_number }}</p>
+    <p class="mt-2">Scan QR Code to pay:</p>
+    <img src="{% url 'payments:generate_qr' type object.id 'airtel' %}"
+         alt="Airtel Money QR Code"
+         class="mx-auto my-4 border p-2 rounded-lg">
+  </div>
+
+  <!-- 📤 Receipt Upload -->
+  <div class="bg-white shadow-md rounded-lg p-8">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800">Upload Receipt</h3>
+    <p class="mb-6 text-gray-600">
+      After paying, please upload a screenshot of your payment confirmation (M-Pesa or Airtel Money).  
+      Our admin team will verify it and unlock your content ✅.
+    </p>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      <div>
+        <label for="id_receipt" class="block text-gray-700 font-medium mb-2">Receipt Screenshot</label>
+        {{ form.receipt }}
+        {% if form.receipt.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.receipt.errors.0 }}</p>
+        {% endif %}
+      </div>
+        <a href="{% url 'payments:upload_receipt' payment.id %}" 
+          class="bg-yellow-500 text-white px-4 py-2 rounded-lg">
+          📤 Upload Receipt
+        </a>
+    </form>
+  </div>
+
+  <p class="text-sm text-gray-500 mt-10 text-center">
+    🔒 Your payment will be manually reviewed. Once confirmed, full access will be granted.
+  </p>
+</div>
+{% endblock %}

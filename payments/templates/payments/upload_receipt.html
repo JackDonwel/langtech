@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-xl mx-auto py-10">
+  <h2 class="text-2xl font-bold mb-6">Upload Payment Receipt</h2>
+  <p class="text-gray-600 mb-4">
+    Please upload your payment confirmation screenshot. Our team will verify and unlock your access.
+  </p>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    {{ form.receipt.label_tag }}  
+    {{ form.receipt }}
+    {% if form.receipt.errors %}
+      <p class="text-red-600 text-sm">{{ form.receipt.errors.0 }}</p>
+    {% endif %}
+
+    <button type="submit"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+      📤 Upload
+    </button>
+  </form>
+</div>
+{% endblock %}

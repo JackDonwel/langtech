@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+{% load seo_tags %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12">
+
+  <!-- 🌟 Hero Section -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg mb-6">
+        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <h1 class="text-5xl font-bold text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+        Share Your Langtouch Experience
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Your voice shapes the future of language learning. Join our community of learners 
+        and help others discover the joy of mastering new languages. 🌍✨
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8 mb-16">
+      <!-- Left: Rating Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-gray-100">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">⭐</span>
+            </div>
+            <div>
+              <h2 class="text-3xl font-bold text-gray-900">Rate Your Experience</h2>
+              <p class="text-gray-500">Help us improve with your honest feedback</p>
+            </div>
+          </div>
+
+          {% if not existing_rating %}
+          <form method="POST" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- Interactive Star Rating -->
+            <div class="space-y-4">
+              <label class="block text-lg font-semibold text-gray-800">How would you rate Langtouch?</label>
+              <div class="flex items-center space-x-4 p-4 bg-gray-50/50 rounded-2xl">
+                <div id="star-rating" class="flex space-x-1 text-4xl">
+                  {% for i in "12345" %}
+                  <button type="button" 
+                          data-value="{{ i }}"
+                          class="star transition-all duration-300 transform hover:scale-125 hover:rotate-12 text-gray-300 hover:text-yellow-300">
+                    ★
+                  </button>
+                  {% endfor %}
+                </div>
+                <span id="rating-text" class="text-lg font-semibold text-gray-700 ml-4">Select stars</span>
+              </div>
+              <input type="hidden" name="score" id="id_score">
+            </div>
+
+            <!-- Feedback Input -->
+            <div class="space-y-4">
+              <label class="block text-lg font-semibold text-gray-800">Share your thoughts</label>
+              <div class="relative">
+                {{ form.feedback|add_class:"w-full h-40 border-0 bg-gray-50/50 rounded-2xl shadow-inner p-6 focus:ring-3 focus:ring-blue-500/30 focus:border-blue-500 text-gray-800 placeholder-gray-400 resize-none transition-all duration-300"|attr:"placeholder:Tell us what you loved, what could be better, or share your language learning journey..." }}
+                <div class="absolute bottom-4 right-4 text-sm text-gray-400">
+                  <span id="char-count">0</span>/500
+                </div>
+              </div>
+              {% if form.feedback.errors %}
+              <p class="text-red-500 text-sm mt-2">{{ form.feedback.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+              <button type="submit" 
+                      class="group relative w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                <span class="relative z-10 flex items-center justify-center">
+                  <svg class="w-5 h-5 mr-3 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                  Submit Your Rating
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+            </div>
+          </form>
+          {% else %}
+          <!-- Already Rated -->
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span class="text-4xl">✅</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Thank You for Your Feedback!</h3>
+            <p class="text-gray-600 max-w-md mx-auto">
+              Your rating has been recorded. You're helping build a better language learning community.
+            </p>
+            <div class="mt-6 inline-flex items-center px-6 py-3 bg-blue-50 text-blue-700 rounded-xl">
+              <span class="text-2xl mr-2">⭐</span>
+              <span class="font-semibold">You rated: {{ existing_rating.score }}/5</span>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right: Stats/Info -->
+      <div class="space-y-6">
+        <div class="bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-xl p-6 border border-blue-100">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Why Your Rating Matters</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <span class="text-blue-500 mr-3">✓</span>
+              <span class="text-gray-700">Helps new learners make informed decisions</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-500 mr-3">✓</span>
+              <span class="text-gray-700">Directly influences our service improvements</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-500 mr-3">✓</span>
+              <span class="text-gray-700">Builds a trusted language learning community</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-500 mr-3">✓</span>
+              <span class="text-gray-700">Encourages quality content creation</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Rating Guidelines</h3>
+          <div class="space-y-3">
+            <div class="flex items-center">
+              <div class="flex text-yellow-400 mr-3">
+                ★★★★★
+              </div>
+              <span class="text-gray-700">Excellent - Exceeded all expectations</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex text-yellow-400 mr-3">
+                ★★★★☆
+              </div>
+              <span class="text-gray-700">Good - Met expectations well</span>
+            </div>
+            <div class="flex items-center">
+              <div class="flex text-yellow-400 mr-3">
+                ★★★☆☆
+              </div>
+              <span class="text-gray-700">Average - Room for improvement</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📊 Recent Reviews Section -->
+    <div class="mb-12">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">Community Reviews</h2>
+          <p class="text-gray-600 mt-2">What our language learners are saying</p>
+        </div>
+        <div class="flex items-center space-x-2 text-blue-600">
+          <span class="text-2xl">💬</span>
+          <span class="font-semibold">{{ ratings|length }} Reviews</span>
+        </div>
+      </div>
+
+      {% if ratings %}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for rating in ratings %}
+        <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl p-6 border border-gray-100 hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-2">
+          <!-- Review Header -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center mr-4">
+                <span class="text-xl font-bold text-blue-600">{{ rating.user.username|first|upper }}</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-gray-900">{{ rating.user.username }}</h4>
+                <p class="text-sm text-gray-500">{{ rating.created_at|date:"M d, Y" }}</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 text-xl">
+              {% for i in rating.filled_stars %}★{% endfor %}
+              {% for i in rating.empty_stars %}☆{% endfor %}
+            </div>
+          </div>
+
+          <!-- Review Content -->
+          <div class="mb-4">
+            <p class="text-gray-700 italic relative pl-4 before:content-'" before:absolute before:left-0 before:top-0 before:text-3xl before:text-blue-200 before:font-serif">
+              {{ rating.feedback|truncatechars:120 }}
+            </p>
+          </div>
+
+          <!-- Review Footer -->
+          <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-sm text-gray-500 flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+              </svg>
+              {{ rating.created_at|timesince }} ago
+            </span>
+            <span class="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-medium rounded-full">
+              Language Learner
+            </span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <!-- Empty State -->
+      <div class="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50/50 rounded-3xl border-2 border-dashed border-gray-300">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-4xl">👋</span>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-3">Be the First to Review!</h3>
+        <p class="text-gray-600 max-w-md mx-auto mb-6">
+          Your review will inspire others to start their language learning journey
+        </p>
+        <button onclick="document.querySelector('form').scrollIntoView({ behavior: 'smooth' })" 
+                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+          <span class="mr-2">⭐</span>
+          Write First Review
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ✨ Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Star Rating System
+  const stars = document.querySelectorAll('#star-rating .star');
+  const scoreInput = document.getElementById('id_score');
+  const ratingText = document.getElementById('rating-text');
+  const feedbackText = document.getElementById('id_feedback');
+  const charCount = document.getElementById('char-count');
+  
+  const ratingLabels = {
+    1: "Poor - Needs significant improvement",
+    2: "Fair - Has some issues",
+    3: "Good - Meets expectations",
+    4: "Very Good - Exceeds expectations",
+    5: "Excellent - Outstanding experience"
+  };
+
+  // Star interaction
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const value = this.dataset.value;
+      scoreInput.value = value;
+      
+      // Update stars visually
+      stars.forEach(s => {
+        s.classList.remove('text-yellow-400', 'text-yellow-300', 'text-gray-300');
+        if (s.dataset.value <= value) {
+          s.classList.add('text-yellow-400');
+          s.classList.remove('text-gray-300');
+        } else {
+          s.classList.add('text-gray-300');
+          s.classList.remove('text-yellow-400');
+        }
+      });
+      
+      // Update rating text
+      ratingText.textContent = ratingLabels[value];
+      ratingText.classList.remove('text-gray-700');
+      ratingText.classList.add('text-blue-600', 'font-bold');
+    });
+
+    // Hover effects
+    star.addEventListener('mouseenter', function() {
+      const hoverValue = this.dataset.value;
+      stars.forEach(s => {
+        if (s.dataset.value <= hoverValue) {
+          s.classList.add('text-yellow-300');
+        }
+      });
+    });
+
+    star.addEventListener('mouseleave', function() {
+      const currentValue = scoreInput.value;
+      stars.forEach(s => {
+        if (!currentValue || s.dataset.value > currentValue) {
+          s.classList.remove('text-yellow-300');
+        }
+      });
+    });
+  });
+
+  // Character counter for feedback
+  if (feedbackText && charCount) {
+    feedbackText.addEventListener('input', function() {
+      const length = this.value.length;
+      charCount.textContent = length;
+      
+      // Visual feedback for length
+      if (length > 450) {
+        charCount.classList.add('text-red-500');
+        charCount.classList.remove('text-gray-400');
+      } else if (length > 300) {
+        charCount.classList.add('text-yellow-500');
+        charCount.classList.remove('text-gray-400');
+      } else {
+        charCount.classList.remove('text-red-500', 'text-yellow-500');
+        charCount.classList.add('text-gray-400');
+      }
+    });
+  }
+
+  // Form submission animation
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const submitBtn = this.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.innerHTML = `
+          <span class="flex items-center justify-center">
+            <svg class="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Submitting...
+          </span>
+        `;
+        submitBtn.disabled = true;
+      }
+    });
+  }
+
+  // Smooth scroll for empty state button
+  document.querySelectorAll('a[href^="#"], button[onclick*="scrollIntoView"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href') || this.getAttribute('onclick').match(/'(.*?)'/)[1]);
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+});
+</script>
+
+<style>
+/* Additional custom styles */
+.star {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.star:hover {
+  transform: scale(1.3) rotate(12deg);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Custom scrollbar for feedback textarea */
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+</style>
+{% endblock %}

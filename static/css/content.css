@@ -1,0 +1,399 @@
+ /* Base Styles */
+    :root {
+        --primary: #6a11cb;
+        --primary-light: #8e2de2;
+        --secondary: #2575fc;
+        --accent: #ff6b6b;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --success: #4CAF50;
+        --warning: #ffc107;
+        --danger: #dc3545;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .testimonial-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+    
+    .testimonial-header {
+        background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        color: white;
+        padding: 50px 40px;
+        text-align: center;
+    }
+    
+    .testimonial-header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .testimonial-header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 300;
+    }
+    
+    .testimonial-form-wrapper {
+        display: flex;
+        padding: 0;
+    }
+    
+    .testimonial-form {
+        flex: 1;
+        padding: 40px;
+        background: white;
+    }
+    
+    .testimonial-illustration {
+        flex: 0 0 35%;
+        background: linear-gradient(135deg, rgba(106, 17, 203, 0.03) 0%, rgba(37, 117, 252, 0.03) 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        gap: 30px;
+        border-left: 1px solid var(--light-gray);
+    }
+    
+    .quote-box {
+        text-align: center;
+        max-width: 300px;
+    }
+    
+    .quote-box i {
+        font-size: 3rem;
+        color: var(--primary-light);
+        opacity: 0.2;
+    }
+    
+    .quote-box p {
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: var(--primary);
+        margin: 20px 0;
+        font-style: italic;
+        line-height: 1.4;
+    }
+    
+    .image-placeholder {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(142, 45, 226, 0.1) 0%, rgba(37, 117, 252, 0.1) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .image-placeholder i {
+        font-size: 5rem;
+        color: var(--primary-light);
+        opacity: 0.3;
+    }
+    
+    /* Form Styles */
+    .form-errors {
+        background: #fff3f3;
+        border-left: 4px solid var(--danger);
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 0 8px 8px 0;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    
+    .form-errors i {
+        color: var(--danger);
+        font-size: 1.8rem;
+        margin-top: 3px;
+    }
+    
+    .form-group {
+        display: flex;
+        margin-bottom: 30px;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    
+    .form-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        margin-top: 5px;
+    }
+    
+    .form-content {
+        flex: 1;
+    }
+    
+    .form-content label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--dark);
+        font-size: 1.1rem;
+    }
+    
+    .form-content input,
+    .form-content textarea,
+    .form-content select {
+        width: 100%;
+        padding: 16px 22px;
+        border: 2px solid var(--light-gray);
+        border-radius: 15px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background: var(--light);
+    }
+    
+    .form-content input:focus,
+    .form-content textarea:focus,
+    .form-content select:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        background: white;
+        box-shadow: 0 0 0 5px rgba(142, 45, 226, 0.1);
+    }
+    
+    .form-content textarea {
+        min-height: 180px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+    
+    .hint {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-top: 8px;
+        font-style: italic;
+    }
+    
+    .field-error {
+        color: var(--danger);
+        font-size: 0.95rem;
+        margin-top: 8px;
+        font-weight: 500;
+    }
+    
+    /* Rating Section */
+.rating-section {
+    background: #f8f5ff;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 40px 0;
+    border-left: 5px solid var(--primary);
+}
+    
+.rating-section label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 20px;
+    color: var(--dark);
+    font-size: 1.2rem;
+}
+
+
+/* Container for the stars */
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse; 
+    justify-content: center;
+}
+ 
+.rating-stars input[type="radio"] {
+    display: none;
+}
+
+.rating-stars label {
+    color: #ddd; /* Default grey color for stars */
+    cursor: pointer;
+    font-size: 2.8rem; /* Use the same font-size as your original code */
+    transition: color 0.2s ease;
+    padding: 0 5px; /* Add some spacing between stars */
+}
+
+.star-option {
+    position: relative;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.rating-stars label:hover {
+    color: var(--warning); /* Gold color on hover */
+}
+
+.rating-stars label:hover ~ label {
+    color: var(--warning);
+}
+
+.rating-stars input[type="radio"]:checked ~ label {
+    color: var(--warning);
+}
+
+.rating-stars input[type="radio"]:checked + label {
+    color: var(--warning);
+}
+
+.star-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+    
+
+    
+    .star-option input[type="radio"]:checked + label,
+    .star-option input[type="radio"]:hover + label,
+    .star-option input[type="radio"]:focus + label {
+        color: var(--warning); /* Gold color for selected stars */
+    }
+    
+    .star-option input[type="radio"]:checked ~ label,
+    .star-option input[type="radio"]:hover ~ label {
+        color: #ddd;
+    }
+    
+    /* Form Tips */
+    .form-tips {
+        background: #707275ff;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 40px 0;
+        border-left: 5px solid var(--secondary);
+    }
+    
+    .form-tips h3 {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: var(--secondary);
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+    }
+    
+    .form-tips ul {
+        padding-left: 30px;
+    }
+    
+    .form-tips li {
+        margin-bottom: 12px;
+        font-size: 1.05rem;
+        line-height: 1.5;
+    }
+    
+    /* Submit Button */
+    .form-actions {
+        margin-top: 40px;
+    }
+    
+    .btn-submit {
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        color: white;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        box-shadow: 0 5px 20px rgba(142, 45, 226, 0.3);
+    }
+    
+    .btn-submit:hover {
+        background: linear-gradient(90deg, #5a1bd0, #7a1dc2);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1000px) {
+        .testimonial-form-wrapper {
+            flex-direction: column;
+        }
+        
+        .testimonial-illustration {
+            padding: 50px 40px;
+            border-left: none;
+            border-top: 1px solid var(--light-gray);
+        }
+    }
+    
+    @media (max-width: 600px) {
+        .testimonial-header {
+            padding: 40px 20px;
+        }
+        
+        .testimonial-header h1 {
+            font-size: 2.2rem;
+        }
+        
+        .testimonial-form {
+            padding: 30px 20px;
+        }
+        
+        .form-group {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-icon {
+            width: 100%;
+            height: auto;
+            padding: 12px;
+            flex-direction: row;
+            gap: 15px;
+            justify-content: flex-start;
+            border-radius: 12px;
+        }
+        
+        .rating-stars {
+            gap: 5px;
+        }
+        
+        .rating-stars label {
+            font-size: 2.5rem; /* Adjusted for smaller screens */
+        }
+    }

@@ -1,0 +1,20 @@
+{% extends "base.html" %} 
+
+{% block title %} Phone payment {% endblock  %} 
+
+{% block content %}
+Choose preferred Mobile Money payment method:
+
+<div class="payment-methods">
+    <div class="payment-method" data-method="mpesa">
+        <h5>MPesa</h5>
+    </div>
+    <div class="payment-method" data-method="tigo">
+        <h5>Tigo Pesa</h5>
+    </div>
+    <div class="payment-method" data-method="airtel">
+        <h5>Airtel Money</h5>
+    </div>
+</div>
+
+{% endblock %}

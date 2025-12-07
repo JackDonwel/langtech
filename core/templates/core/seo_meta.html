@@ -1,0 +1,248 @@
+{% if seo %}
+    <!-- Primary Meta Tags -->
+    <title>{{ seo.meta_title|truncatechars:60 }}</title>
+    <meta name="description" content="{{ seo.meta_description|truncatechars:160 }}">
+    <meta name="keywords" content="{{ seo.meta_keywords }}">
+    
+    <!-- Robots & Canonical -->
+    <meta name="robots" content="{{ seo.robots_meta|default:'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' }}">
+    <link rel="canonical" href="{{ seo.canonical_url|default:request.build_absolute_uri }}">
+    
+    <!-- Viewport for Mobile SEO -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Author & Copyright -->
+    <meta name="author" content="{{ seo.author|default:'Langtouch' }}">
+    <meta name="copyright" content="{{ seo.copyright|default:'Copyright © Langtouch. All rights reserved.' }}">
+    
+    <!-- Language & Locale -->
+    <meta name="language" content="{{ seo.language|default:'en' }}">
+    <meta name="geo.region" content="{{ seo.geo_region|default:'TZ' }}">
+    <meta name="geo.placename" content="{{ seo.geo_placename|default:'Dar es Salaam' }}">
+    <meta name="geo.position" content="{{ seo.geo_position|default:'-6.7924;39.2083' }}">
+    <meta name="ICBM" content="{{ seo.icbm|default:'-6.7924, 39.2083' }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:site_name" content="{{ seo.site_name|default:'Langtouch Language Services' }}">
+    <meta property="og:locale" content="{{ seo.og_locale|default:'en_US' }}">
+    <meta property="og:title" content="{{ seo.og_title|default:seo.meta_title|truncatechars:60 }}">
+    <meta property="og:description" content="{{ seo.og_description|default:seo.meta_description|truncatechars:160 }}">
+    <meta property="og:url" content="{{ seo.canonical_url|default:request.build_absolute_uri }}">
+    <meta property="og:type" content="{{ seo.og_type|default:'website' }}">
+    
+    {% if seo.og_image_url %}
+    <meta property="og:image" content="{{ seo.og_image_url }}">
+    <meta property="og:image:secure_url" content="{{ seo.og_image_url|replace:'http:','https:' }}">
+    <meta property="og:image:alt" content="{{ seo.og_image_alt|default:seo.meta_title|truncatechars:100 }}">
+    <meta property="og:image:width" content="{{ seo.og_image_width|default:'1200' }}">
+    <meta property="og:image:height" content="{{ seo.og_image_height|default:'630' }}">
+    <meta property="og:image:type" content="{{ seo.og_image_type|default:'image/jpeg' }}">
+    {% endif %}
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="{{ seo.twitter_card|default:'summary_large_image' }}">
+    <meta name="twitter:site" content="{{ seo.twitter_site|default:'@langtouch' }}">
+    <meta name="twitter:creator" content="{{ seo.twitter_creator|default:'@langtouch' }}">
+    <meta name="twitter:title" content="{{ seo.twitter_title|default:seo.og_title|default:seo.meta_title|truncatechars:60 }}">
+    <meta name="twitter:description" content="{{ seo.twitter_description|default:seo.og_description|default:seo.meta_description|truncatechars:160 }}">
+    
+    {% if seo.twitter_image_url %}
+    <meta name="twitter:image" content="{{ seo.twitter_image_url }}">
+    <meta name="twitter:image:alt" content="{{ seo.twitter_image_alt|default:seo.og_image_alt|default:seo.meta_title|truncatechars:100 }}">
+    {% endif %}
+    
+    <!-- Additional Social Media Tags -->
+    <meta property="fb:app_id" content="{{ seo.fb_app_id|default:'YOUR_FACEBOOK_APP_ID' }}">
+    <meta property="fb:pages" content="{{ seo.fb_pages|default:'YOUR_FACEBOOK_PAGE_ID' }}">
+    
+    <!-- LinkedIn Tags -->
+    <meta property="linkedin:author" content="{{ seo.linkedin_author }}">
+    <meta property="linkedin:company" content="{{ seo.linkedin_company|default:'Langtouch' }}">
+    
+    <!-- Structured Data - Primary -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "{% if seo.schema_type %}{{ seo.schema_type }}{% else %}ProfessionalService{% endif %}",
+        "name": "{{ seo.meta_title|default:'Langtouch Translation Services' }}",
+        "description": "{{ seo.meta_description|escapejs }}",
+        "url": "{{ seo.canonical_url|default:request.build_absolute_uri }}",
+        {% if seo.og_image_url %}"image": "{{ seo.og_image_url }}",{% endif %}
+        "provider": {
+            "@type": "Organization",
+            "name": "{{ seo.organization_name|default:'Langtouch' }}",
+            "url": "{{ request.scheme }}://{{ request.get_host }}/",
+            "logo": "{{ seo.organization_logo|default:request.scheme|add:'://'|add:request.get_host|add:'/static/images/logo.png' }}",
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "{{ seo.organization_phone|default:'+255-123-456-789' }}",
+                "contactType": "customer service",
+                "areaServed": "{{ seo.area_served|default:'TZ' }}",
+                "availableLanguage": ["en", "sw"]
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "{{ seo.address_street|default:'123 Language Street' }}",
+                "addressLocality": "{{ seo.address_city|default:'Dar es Salaam' }}",
+                "addressRegion": "{{ seo.address_region|default:'DSM' }}",
+                "postalCode": "{{ seo.address_postal|default:'12345' }}",
+                "addressCountry": "{{ seo.address_country|default:'TZ' }}"
+            }
+        },
+        "areaServed": {
+            "@type": "Country",
+            "name": "{{ seo.area_served_name|default:'Tanzania' }}"
+        },
+        "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "TZS",
+            "lowPrice": "{{ seo.low_price|default:'50000' }}",
+            "highPrice": "{{ seo.high_price|default:'500000' }}",
+            "offerCount": "{{ seo.offer_count|default:'10' }}"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "{{ seo.rating_value|default:'4.8' }}",
+            "reviewCount": "{{ seo.review_count|default:'127' }}",
+            "bestRating": "5",
+            "worstRating": "1"
+        },
+        "sameAs": [
+            "{{ seo.facebook_url|default:'https://facebook.com/langtouch' }}",
+            "{{ seo.twitter_url|default:'https://twitter.com/langtouch' }}",
+            "{{ seo.linkedin_url|default:'https://linkedin.com/company/langtouch' }}",
+            "{{ seo.instagram_url|default:'https://instagram.com/langtouch' }}"
+        ]
+    }
+    </script>
+    
+    <!-- Breadcrumb Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "{{ seo.breadcrumb_name|default:'Services' }}",
+                "item": "{{ seo.canonical_url|default:request.build_absolute_uri }}"
+            }
+        ]
+    }
+    </script>
+    
+    <!-- FAQ Structured Data (Conditional) -->
+    {% if seo.faq_data %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {% for faq in seo.faq_data %}
+            {
+                "@type": "Question",
+                "name": "{{ faq.question|escapejs }}",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "{{ faq.answer|escapejs }}"
+                }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }
+    </script>
+    {% endif %}
+    
+    <!-- Local Business Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LanguageSchool",
+        "@id": "{{ request.scheme }}://{{ request.get_host }}/#organization",
+        "name": "{{ seo.organization_name|default:'Langtouch Language Services' }}",
+        "description": "{{ seo.meta_description|escapejs }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/",
+        "telephone": "{{ seo.organization_phone|default:'+255-123-456-789' }}",
+        "openingHours": "{{ seo.opening_hours|default:'Mo-Fr 08:00-20:00' }}",
+        "priceRange": "{{ seo.price_range|default:'TZS 50,000 - 500,000' }}",
+        "currenciesAccepted": "TZS, USD",
+        "paymentAccepted": "Cash, Credit Card, Mobile Money",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Language Services",
+            "itemListElement": []
+        }
+    }
+    </script>
+    
+    <!-- Mobile App Meta Tags (Optional) -->
+    {% if seo.mobile_app %}
+    <meta name="apple-itunes-app" content="{{ seo.mobile_app }}">
+    <meta name="google-play-app" content="{{ seo.android_app }}">
+    {% endif %}
+    
+    <!-- Hreflang for International SEO -->
+    {% if seo.alternate_languages %}
+    {% for lang in seo.alternate_languages %}
+    <link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}">
+    {% endfor %}
+    {% endif %}
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ seo.manifest_url|default:'/manifest.json' }}">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="{{ seo.theme_color|default:'#3b82f6' }}">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="format-detection" content="telephone=yes">
+    <meta name="rating" content="{{ seo.content_rating|default:'General' }}">
+    <meta name="referrer" content="{{ seo.referrer_policy|default:'strict-origin-when-cross-origin' }}">
+    
+    <!-- Site Verification -->
+    {% if seo.google_site_verification %}
+    <meta name="google-site-verification" content="{{ seo.google_site_verification }}">
+    {% endif %}
+    
+    {% if seo.bing_site_verification %}
+    <meta name="msvalidate.01" content="{{ seo.bing_site_verification }}">
+    {% endif %}
+    
+    {% if seo.yandex_site_verification %}
+    <meta name="yandex-verification" content="{{ seo.yandex_site_verification }}">
+    {% endif %}
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+{% else %}
+    <!-- Default SEO when no seo object provided -->
+    <title>Langtouch Language Services | Professional Translation & Learning</title>
+    <meta name="description" content="Professional language translation services, certified courses, and language learning programs in Tanzania. Expert instructors, flexible scheduling, and recognized certification.">
+    <meta name="keywords" content="language services Tanzania, translation services, online courses, language certification">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    
+    <meta property="og:title" content="Langtouch Language Services">
+    <meta property="og:description" content="Professional language translation and learning services in Tanzania">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-default.jpg' %}">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@langtouch">
+    <meta name="twitter:title" content="Langtouch Language Services">
+    <meta name="twitter:description" content="Professional language services in Tanzania">
+{% endif %}
+
+<!-- Always include these for better SEO -->
+<meta name="generator" content="Django">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
