@@ -1,0 +1,1127 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="description" content="Secure authentication for Langtech - Your language learning platform">
+    <title>Langtech - Secure Authentication</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --accent: #10b981;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --error: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #0c1427 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Messages */
+        .messages-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        .message {
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-left: 4px solid var(--success);
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border-left: 4px solid var(--error);
+        }
+
+        .message.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Main Container */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Brand Panel */
+        .brand-panel {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 60px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .brand-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .brand-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-tagline {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            max-width: 400px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon i {
+            color: white;
+            font-size: 20px;
+        }
+
+        .feature-text h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .feature-text p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Form Panel */
+        .form-panel {
+            padding: 60px 48px;
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .form-header h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text), var(--text-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .form-tabs {
+            display: flex;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 40px;
+            gap: 8px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab-button.active::after {
+            width: 40px;
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .forms-container {
+            position: relative;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .auth-form {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+
+        .auth-form.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .form-field-wrapper {
+            margin-bottom: 24px;
+        }
+
+        .form-field-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            padding-left: 52px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .error-message i {
+            font-size: 12px;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .remember-me label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .social-login {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+        }
+
+        .social-login::before {
+            content: 'or continue with';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 41, 59, 0.5);
+            padding: 0 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .social-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 14px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .social-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .form-footer {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 32px;
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 48px 24px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .footer-section p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer-bottom a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+            
+            .brand-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .auth-container {
+                padding: 16px;
+            }
+            
+            .form-panel {
+                padding: 40px 24px;
+            }
+            
+            .form-tabs {
+                flex-direction: column;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Particle Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    <i class="fas 
+                        {% if message.tags == 'success' %}fa-check-circle
+                        {% elif message.tags == 'error' %}fa-exclamation-circle
+                        {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                        {% else %}fa-info-circle{% endif %}">
+                    </i>
+                    <span>{{ message }}</span>
+                    <button type="button" class="close-message ml-auto text-lg opacity-60 hover:opacity-100">
+                        &times;
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="auth-container">
+        <div class="auth-wrapper">
+            <!-- Brand Panel -->
+            <div class="brand-panel">
+                <div class="brand-content">
+                    <div class="brand-logo">
+                        <div class="brand-icon floating">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h1 class="brand-title">Langtech</h1>
+                    </div>
+                    
+                    <p class="brand-tagline">
+                        Master languages with AI-powered tools, professional tutors, and immersive learning experiences.
+                    </p>
+
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>AI-Powered Learning</h4>
+                                <p>Smart recommendations and personalized lessons</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Progress Tracking</h4>
+                                <p>Monitor your improvement with detailed analytics</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Community Support</h4>
+                                <p>Connect with learners and native speakers worldwide</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="#" class="switch-to-login">Sign In</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Panel -->
+            <div class="form-panel">
+                <div class="form-header">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to your account to continue your language journey</p>
+                </div>
+
+                <div class="form-tabs">
+                    <button class="tab-button active" data-tab="login">Sign In</button>
+                    <button class="tab-button" data-tab="register">Sign Up</button>
+                </div>
+
+                <div class="forms-container">
+                    <!-- Sign In Form -->
+                    <form method="post" action="{% url 'accounts:login' %}" class="auth-form active" id="login-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-field-wrapper">
+                            <label for="id_username">Email or Username</label>
+                            <div class="input-group">
+                                <i class="input-icon fas fa-user"></i>
+                                {% render_field form.username class="input-field" placeholder="Enter your email or username" id="id_username" %}
+                            </div>
+                            {% for error in form.username.errors %}
+                                <p class="error-message"><i class="fas fa-exclamation-circle"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-field-wrapper">
+                            <label for="id_password">Password</label>
+                            <div class="input-group">
+                                <i class="input-icon fas fa-lock"></i>
+                                {% render_field form.password class="input-field" placeholder="Enter your password" id="id_password" type="password" %}
+                                <button type="button" class="password-toggle" data-target="id_password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% for error in form.password.errors %}
+                                <p class="error-message"><i class="fas fa-exclamation-circle"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember-me">
+                                <label for="remember-me">Remember me</label>
+                            </div>
+                            <a href="{% url 'accounts:password_reset' %}" class="forgot-password">Forgot Password?</a>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="error-messages">
+                                {% for error in form.non_field_errors %}
+                                    <p class="error-message"><i class="fas fa-exclamation-circle"></i>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="submit-button">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </button>
+
+                        <div class="social-login">
+                            <div class="social-buttons">
+                                <button type="button" class="social-button google">
+                                    <i class="fab fa-google"></i>
+                                    Google
+                                </button>
+                                <button type="button" class="social-button github">
+                                    <i class="fab fa-github"></i>
+                                    GitHub
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <p>Don't have an account? <a href="#" class="switch-to-register">Sign Up</a></p>
+                        </div>
+                    </form>
+
+                    <!-- Sign Up Form -->
+                    <form method="post" action="{% url 'accounts:register' %}" class="auth-form" id="register-form">
+                        {% csrf_token %}
+                        
+                        {% for field in register_form %}
+                            <div class="form-field-wrapper">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                <div class="input-group">
+                                    <i class="input-icon fas fa-{% if field.name == 'username' %}user{% elif field.name == 'email' %}envelope{% elif 'password' in field.name %}lock{% else %}user-edit{% endif %}"></i>
+                                    {% render_field field class="input-field" placeholder=field.label id=field.id_for_label %}
+                                    {% if 'password' in field.name %}
+                                        <button type="button" class="password-toggle" data-target="{{ field.id_for_label }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="help-text" style="color: var(--text-secondary); font-size: 12px; display: block; margin-top: 4px;">
+                                        {{ field.help_text }}
+                                    </small>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <p class="error-message"><i class="fas fa-exclamation-circle"></i>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        {% if register_form.non_field_errors %}
+                            <div class="error-messages">
+                                {% for error in register_form.non_field_errors %}
+                                    <p class="error-message"><i class="fas fa-exclamation-circle"></i>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="terms" required>
+                                <label for="terms">I agree to the <a href="#" class="text-primary">Terms</a> and <a href="#" class="text-primary">Privacy Policy</a></label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-button">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+
+                        <div class="form-footer">
+                            <p>Already have an account? <a href="#" class="switch-to-login">Sign In</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Langtech</h3>
+                <p>Revolutionizing language learning through technology and innovation. Making language acquisition accessible and effective for everyone.</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/langtech" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.twitter.com/langtech" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/langtech" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/company/langtech" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/langtech" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><a href="/" style="color: var(--text-secondary); text-decoration: none;">Home</a></p>
+                <p><a href="{% url 'core:services' %}" style="color: var(--text-secondary); text-decoration: none;">Services</a></p>
+                <p><a href="{% url 'core:about' %}" style="color: var(--text-secondary); text-decoration: none;">About Us</a></p>
+                <p><a href="{% url 'content:blog_list' %}" style="color: var(--text-secondary); text-decoration: none;">Blog</a></p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope mr-2"></i> info@langtech.com</p>
+                <p><i class="fas fa-phone mr-2"></i> +255 123 456 789</p>
+                <p><i class="fas fa-map-marker-alt mr-2"></i> Dar es Salaam, Tanzania</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© {% now "Y" %} Langtech. All rights reserved.</p>
+            <p>
+                <a href="#">Privacy Policy</a> | 
+                <a href="#">Terms of Service</a> | 
+                <a href="#">Cookie Policy</a>
+            </p>
+            <p class="mt-4">
+                Made with <i class="fas fa-heart text-red-400 mx-1"></i> by 
+                <a href="https://sites.google.com/view/dontech-cyber/welcome" target="_blank">jdonwell</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Particle Background
+            function createParticles() {
+                const particles = document.getElementById('particles');
+                const colors = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    const size = Math.random() * 5 + 1;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = color;
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.opacity = Math.random() * 0.2 + 0.05;
+                    particle.style.animation = `float ${Math.random() * 10 + 10}s ease-in-out infinite`;
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    particles.appendChild(particle);
+                }
+            }
+
+            // Tab Switching
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const forms = document.querySelectorAll('.auth-form');
+            const switchLinks = document.querySelectorAll('.switch-to-login, .switch-to-register');
+
+            function switchTab(tabName) {
+                // Update active tab button
+                tabButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.tab === tabName);
+                });
+
+                // Show corresponding form
+                forms.forEach(form => {
+                    form.classList.toggle('active', form.id === `${tabName}-form`);
+                });
+
+                // Update URL hash
+                window.location.hash = tabName;
+            }
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+
+            switchLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.classList.contains('switch-to-login') ? 'login' : 'register';
+                    switchTab(target);
+                });
+            });
+
+            // Check URL hash on load
+            if (window.location.hash === '#register') {
+                switchTab('register');
+            }
+
+            // Password Toggle
+            document.querySelectorAll('.password-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const targetId = toggle.dataset.target;
+                    const input = document.getElementById(targetId);
+                    const icon = toggle.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // Message Close
+            document.querySelectorAll('.close-message').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.closest('.message').style.opacity = '0';
+                    setTimeout(() => {
+                        btn.closest('.message').remove();
+                    }, 300);
+                });
+            });
+
+            // Auto-remove messages after 5 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.message').forEach(msg => {
+                    msg.style.opacity = '0';
+                    setTimeout(() => msg.remove(), 300);
+                });
+            }, 5000);
+
+            // Form Validation Enhancements
+            const formsToValidate = document.querySelectorAll('.auth-form');
+            formsToValidate.forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    const submitBtn = form.querySelector('.submit-button');
+                    const originalText = submitBtn.innerHTML;
+                    
+                    // Show loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    submitBtn.disabled = true;
+                    
+                    // Re-enable after 5 seconds if still processing
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 5000);
+                });
+            });
+
+            // Social Login Buttons
+            document.querySelectorAll('.social-button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const provider = btn.classList.contains('google') ? 'Google' : 'GitHub';
+                    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Connecting...`;
+                    btn.disabled = true;
+                    
+                    // In a real app, this would redirect to OAuth endpoint
+                    setTimeout(() => {
+                        alert(`Redirecting to ${provider} authentication...`);
+                    }, 1000);
+                });
+            });
+
+            // Initialize particles
+            createParticles();
+
+            // Add subtle hover effects to input fields
+            document.querySelectorAll('.input-field').forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.style.transform = 'scale(1.02)';
+                });
+                
+                input.addEventListener('blur', () => {
+                    input.parentElement.style.transform = 'scale(1)';
+                });
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + / to focus search (if implemented)
+                if (e.ctrlKey && e.key === '/') {
+                    e.preventDefault();
+                    const activeForm = document.querySelector('.auth-form.active');
+                    const firstInput = activeForm.querySelector('input');
+                    if (firstInput) firstInput.focus();
+                }
+                
+                // Escape to clear messages
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.message').forEach(msg => msg.remove());
+                }
+            });
+
+            // Add smooth scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
